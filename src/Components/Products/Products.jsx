@@ -19,10 +19,12 @@ export default function RecentProducts() {
           <link rel="canonical" href="http://mysite.com/example" />
         </Helmet>
       </div>
-      <div className="grid mt-8 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {data.map((product) => (
-          <ProductItem key={product._id} product={product} />
-        ))}
+      <div className=" mt-[200px] max-w-full px-40  justify-center items-center">
+        <div className="grid  gap-4 grid-cols-1 my-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {data.map((product) => (
+            <ProductItem key={product._id} product={product} />
+          ))}
+        </div>
       </div>
     </>
   );

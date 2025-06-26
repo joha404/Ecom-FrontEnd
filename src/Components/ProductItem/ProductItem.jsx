@@ -78,7 +78,7 @@ export default function ProductItem({ product }) {
         <motion.img
           src={product.imageCover}
           alt={product.title}
-          className="w-full h-56 object-cover rounded-t-xl transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-56 object-cover rounded-t-xl my-6 transition-transform duration-300 group-hover:scale-105"
         />
         <div className="p-4">
           <h2 className="text-green-600 text-sm font-medium">

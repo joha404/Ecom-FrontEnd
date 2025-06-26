@@ -5,7 +5,9 @@ export default function UserContextProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem("tkn"));
   useEffect(() => {
     //execute ?    1- mount phase       2- every time rerender for token
-    token ? localStorage.setItem("tkn", token) : localStorage.removeItem("tkn");
+    token
+      ? localStorage.setItem("userToken", token)
+      : localStorage.removeItem("tkn");
   }, [token]);
 
   return (

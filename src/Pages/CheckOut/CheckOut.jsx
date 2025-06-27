@@ -29,11 +29,6 @@ export default function CheckOut() {
 
   return (
     <div className="h-screen flex flex-col justify-center items-center p-4 dark:bg-[#111827] bg-gray-100">
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>CheckOut</title>
-        <link rel="canonical" href="http://mysite.com/example" />
-      </Helmet>
       <div className="bg-white dark:bg-[#374151] shadow-sm rounded-lg p-8 max-w-md w-full">
         <h2 className="text-green-600 text-2xl mb-6">CheckOut</h2>
         <form onSubmit={checkoutFormik.handleSubmit} className="space-y-5">

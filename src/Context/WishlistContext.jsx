@@ -1,67 +1,43 @@
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 export const WishlistContext = createContext();
+
 export default function WishlistContextProvider({ children }) {
   const [count, setCount] = useState(0);
-  //build all function here
-  //add
+
+  // Mock add
   async function AddProductToWishlist(pID) {
-    return axios
-      .post(
-        "https://ecommerce.routemisr.com/api/v1/wishlist",
-        {
-          productId: pID,
-        },
-        {
-          headers: {
-            token: localStorage.getItem("tkn"),
-          },
-        }
-      )
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCount((prev) => prev + 1);
+        resolve({ data: { success: true, productId: pID } });
+      }, 300);
+    });
   }
 
-  //getUserWishlist
+  // Mock get
   async function getLoggedUserWishlist() {
-    return axios
-      .get("https://ecommerce.routemisr.com/api/v1/wishlist", {
-        headers: {
-          token: localStorage.getItem("tkn"),
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ data: { count } });
+      }, 300);
+    });
   }
 
-  //delete
+  // Mock delete
   async function deleteProductFromWishlist(pID) {
-    return axios
-      .delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${pID}`, {
-        headers: {
-          token: localStorage.getItem("tkn"),
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCount((prev) => (prev > 0 ? prev - 1 : 0));
+        resolve({ data: { success: true, productId: pID } });
+      }, 300);
+    });
   }
 
+  // ✅ Expose a function named "getLogged" for Home.jsx
   async function getLogged() {
-    const response = await getLoggedUserWishlist();
-    setCount(response.data?.count);
+    const res = await getLoggedUserWishlist();
+    setCount(res.data.count ?? 0);
   }
 
   useEffect(() => {
@@ -74,9 +50,9 @@ export default function WishlistContextProvider({ children }) {
         getLoggedUserWishlist,
         AddProductToWishlist,
         deleteProductFromWishlist,
+        getLogged, // ✅ include this in context value
         count,
         setCount,
-        getLogged,
       }}
     >
       {children}

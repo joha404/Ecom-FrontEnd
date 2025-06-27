@@ -65,7 +65,7 @@ export default function ProductItem({ product }) {
 
   return (
     <motion.div
-      className="relative group overflow-hidden rounded-xl shadow-md bg-white dark:bg-gray-900"
+      className="relative group overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
       whileHover="visible"
       initial="hidden"
       animate="hidden"

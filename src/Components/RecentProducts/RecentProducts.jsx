@@ -35,11 +35,6 @@ export default function RecentProducts() {
 
   return (
     <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Products</title>
-        <link rel="canonical" href="http://mysite.com/example" />
-      </Helmet>
       <h1 className="mt-12 mb-4">All Recent Products</h1>
 
       <motion.div

@@ -76,13 +76,7 @@ export default function Wishlist() {
 
   return (
     <>
-      <div>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>Wishlist</title>
-          <link rel="canonical" href="http://mysite.com/example" />
-        </Helmet>
-      </div>
+      <div></div>
       <h2 className="text-green-600 text-2xl font-bold py-5">My Wishlist</h2>
       <div>
         {wishlistItems.length != 0 ? (

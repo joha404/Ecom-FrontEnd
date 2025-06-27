@@ -1,141 +1,119 @@
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 export const CartContext = createContext();
-export default function CartContextProvidor({ children }) {
-  // build functions (store data) ======> if any components need it ? useContext w ya5odha 3ady
 
-  // state
+export default function CartContextProvider({ children }) {
+  // Local state to simulate cart
   const [numOfCartItems, setNumOfCartItems] = useState(0);
-  const [cartID, setCartID] = useState(null);
-  const returnUrl = `${window.location.origin}/#`;
-  // add to cart
+  const [cartID, setCartID] = useState("mock-cart-id-123");
+  const [cartItems, setCartItems] = useState([]); // array of { productId, count }
+
+  // Simulate adding product to cart
   async function addProductToCart(pID) {
-    return axios
-      .post(
-        "https://ecommerce.routemisr.com/api/v1/cart",
-        {
-          productId: pID,
-        },
-        {
-          headers: {
-            token: localStorage.getItem("tkn"),
-          },
-        }
-      )
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCartItems((prev) => {
+          const existing = prev.find((item) => item.productId === pID);
+          if (existing) {
+            // increment count
+            return prev.map((item) =>
+              item.productId === pID ? { ...item, count: item.count + 1 } : item
+            );
+          }
+          // add new
+          return [...prev, { productId: pID, count: 1 }];
+        });
+        setNumOfCartItems((prev) => prev + 1);
+        resolve({ data: { success: true, productId: pID } });
+      }, 300);
+    });
   }
 
-  // get logged user cart       ==> implementation bass => when need useContext w use it
+  // Simulate fetching cart data
   async function getLoggedUserCart() {
-    return axios
-      .get("https://ecommerce.routemisr.com/api/v1/cart", {
-        headers: {
-          token: localStorage.getItem("tkn"),
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          data: {
+            cartID,
+            items: cartItems,
+            totalItems: numOfCartItems,
+          },
+        });
+      }, 300);
+    });
   }
 
-  // update cart
+  // Simulate updating product count
   async function updateProductCount(pID, count) {
-    return axios
-      .put(
-        `https://ecommerce.routemisr.com/api/v1/cart/${pID}`,
-        {
-          count,
-        },
-        {
-          headers: {
-            token: localStorage.getItem("tkn"),
-          },
-        }
-      )
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCartItems((prev) => {
+          const updated = prev.map((item) =>
+            item.productId === pID ? { ...item, count } : item
+          );
+          // recalc total count
+          const total = updated.reduce((sum, i) => sum + i.count, 0);
+          setNumOfCartItems(total);
+          return updated;
+        });
+        resolve({ data: { success: true, productId: pID, count } });
+      }, 300);
+    });
   }
 
-  // delete item from cart
+  // Simulate deleting item from cart
   async function deleteItem(pID) {
-    return axios
-      .delete(`https://ecommerce.routemisr.com/api/v1/cart/${pID}`, {
-        headers: {
-          token: localStorage.getItem("tkn"),
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCartItems((prev) => {
+          const filtered = prev.filter((item) => item.productId !== pID);
+          // recalc total count
+          const total = filtered.reduce((sum, i) => sum + i.count, 0);
+          setNumOfCartItems(total);
+          return filtered;
+        });
+        resolve({ data: { success: true, productId: pID } });
+      }, 300);
+    });
   }
 
-  // clear cart
+  // Simulate clearing the cart
   async function clearCart() {
-    return axios
-      .delete("https://ecommerce.routemisr.com/api/v1/cart", {
-        headers: {
-          token: localStorage.getItem("tkn"),
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setCartItems([]);
+        setNumOfCartItems(0);
+        resolve({ data: { success: true } });
+      }, 300);
+    });
   }
 
-  //checkout cart
+  // Simulate checkout (just resolve)
   async function checkOut(cartID, formValues) {
-    return axios
-      .post(
-        `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartID}`,
-        {
-          shippingAddress: formValues,
-        },
-        {
-          headers: {
-            token: localStorage.getItem("tkn"),
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          data: {
+            success: true,
+            cartID,
+            shippingAddress: formValues,
           },
-          params:{
-            url: `${window.location.origin}/#`
-        }
-        }
-      )
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        return error;
-      });
+        });
+      }, 300);
+    });
   }
 
-  //function call useCart
-  async function callinguserCart() {
+  // Initialize or refresh cart on mount
+  async function getLogged() {
     const response = await getLoggedUserCart();
-    // setCartNum(response.data?.numOfCartItems);
-    setCartID(response?.data?.data._id);
-    setNumOfCartItems(response.data?.numOfCartItems);
+    setNumOfCartItems(response.data.totalItems ?? 0);
+    setCartID(response.data.cartID ?? null);
+    setCartItems(response.data.items ?? []);
   }
 
   useEffect(() => {
-    callinguserCart();
+    getLogged();
   }, []);
 
   return (
@@ -150,7 +128,8 @@ export default function CartContextProvidor({ children }) {
         setNumOfCartItems,
         checkOut,
         cartID,
-        callinguserCart,
+        getLogged,
+        cartItems,
       }}
     >
       {children}

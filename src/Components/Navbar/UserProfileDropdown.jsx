@@ -26,7 +26,7 @@ export default function UserProfileDropdown() {
   };
 
   return (
-    <li className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <img
         onClick={() => setIsProfileOpen(!isProfileOpen)}
         src={avatar}
@@ -72,6 +72,6 @@ export default function UserProfileDropdown() {
           </motion.ul>
         )}
       </AnimatePresence>
-    </li>
+    </div>
   );
 }

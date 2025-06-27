@@ -1,21 +1,22 @@
 import { useRoutes } from "react-router-dom";
-import Layout from "./Components/Layout/Layout";
-import Home from "./Components/Home/Home";
-import Login from "./Components/Login/Login";
-import NotFound from "./Components/NotFound/NotFound";
-import Categories from "./Components/Categories/Categories";
-import Brands from "./Components/Brands/Brands";
-import Products from "./Components/Products/Products";
-import Cart from "./Components/Cart/Cart";
-import Register from "./Components/Register/Register";
-import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
-import ForgetPassword from "./Components/ForgetPassword/ForgetPassword";
-import ResetCode from "./Components/ResetCode/ResetCode";
-import ResetPassword from "./Components/ResetPassword/ResetPassword";
-import ProductDetails from "./Components/ProductDetails/ProductDetails";
-import Wishlist from "./Components/Wishlist/Wishlist";
-import CheckOut from "./Components/CheckOut/CheckOut";
-import AllOrders from "./Components/AllOrders/AllOrders";
+import Layout from "../Components/Layout/Layout";
+import Brands from "../Components/Brands/Brands";
+import Products from "../Pages/Product/Products";
+import ProtectedRoute from "../Components/ProtectedRoute/ProtectedRoute";
+import ProductDetails from "../Pages/Product/ProductDetails";
+import Home from "../Pages/Home/Home";
+import Cart from "../Pages/Cart/Cart";
+import Wishlist from "../Pages/Wishlist/Wishlist";
+import CheckOut from "../Pages/CheckOut/CheckOut";
+import AllOrders from "../Pages/AllOrders/AllOrders";
+import NotFound from "../Pages/NotFound/NotFound";
+import Login from "../Pages/Auth/Login";
+import Register from "../Pages/Auth/Register";
+import ForgetPassword from "../Pages/Auth/ForgetPassword";
+import ResetCode from "../Pages/Auth/ResetCode";
+import ResetPassword from "../Pages/Auth/ResetPassword";
+import Categories from "../Pages/Category/Categories";
+import Profile from "../Pages/Profile/Profile";
 
 export default function AppRoutes() {
   return useRoutes([
@@ -65,6 +66,14 @@ export default function AppRoutes() {
           element: (
             <ProtectedRoute>
               <Products />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           ),
         },

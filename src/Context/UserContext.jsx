@@ -1,23 +1,19 @@
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo } from "react";
 
-export const userContext = createContext();
+export const UserContext = createContext(null);
+
 export default function UserContextProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("tkn"));
+  const [token, setToken] = useState(() => localStorage.getItem("userToken"));
+
   useEffect(() => {
-    //execute ?    1- mount phase       2- every time rerender for token
-    token
-      ? localStorage.setItem("userToken", token)
-      : localStorage.removeItem("tkn");
+    if (token) {
+      localStorage.setItem("userToken", token);
+    } else {
+      localStorage.removeItem("userToken");
+    }
   }, [token]);
 
-  return (
-    <userContext.Provider
-      value={{
-        token,
-        setToken,
-      }}
-    >
-      {children}
-    </userContext.Provider>
-  );
+  const value = useMemo(() => ({ token, setToken }), [token]);
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }

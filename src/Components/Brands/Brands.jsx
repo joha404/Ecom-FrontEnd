@@ -16,13 +16,6 @@ export default function Brands() {
 
   return (
     <div>
-      <div>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>Brands</title>
-          <link rel="canonical" href="http://mysite.com/example" />
-        </Helmet>
-      </div>
       <div className="grid mt-8 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
         {data.map((brand) => (
           <div

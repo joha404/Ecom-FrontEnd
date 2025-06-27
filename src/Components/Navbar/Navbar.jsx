@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "./../../assets/images/freshcart-logo.svg";
@@ -17,6 +17,7 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
   const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   // Update token and close menu on route change
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
 
               {/* Desktop navigation */}
               <div className="hidden lg:flex lg:w-auto">
-                {token && (
+                {!token && (
                   <ul className="flex items-center gap-4">
                     {["/", "/products", "/categories", "/brands"].map(
                       (path, idx) => (
@@ -115,7 +116,7 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
                 )}
 
                 <ul className="flex items-center gap-4 ml-6">
-                  {!token ? (
+                  {token ? (
                     <>
                       <li>
                         <NavLink to="/login" className="nav-link">
@@ -195,7 +196,7 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
                         </>
                       )}
 
-                      {!token ? (
+                      {token ? (
                         <>
                           <li>
                             <NavLink

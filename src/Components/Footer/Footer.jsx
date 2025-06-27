@@ -7,50 +7,32 @@ export default function FooterSection() {
             <h6 className="text-sm text-white font-medium">RESOURCES</h6>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Graphic Design Tools
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Video Editing Tools
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Image Enhancer
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Remove Backgrounds
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Photo Enhancement
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Explore All Tools
                 </a>
               </li>
@@ -61,74 +43,47 @@ export default function FooterSection() {
             <h6 className="text-sm text-white font-medium">HELPFUL LINKS</h6>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Subscription Plans
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Our Story
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Developer API
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Career Opportunities
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Become a Contributor
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Brand Guidelines
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Upcoming Events
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Search Insights
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Latest Articles
                 </a>
               </li>
@@ -139,50 +94,32 @@ export default function FooterSection() {
             <h6 className="text-sm text-white font-medium">POLICIES</h6>
             <ul className="space-y-3">
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Terms & Conditions
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   User Agreement
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Data Privacy Policy
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Copyright Notice
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Cookie Usage Policy
                 </a>
               </li>
               <li>
-                <a
-                  href="javascript:void(0)"
-                  className="text-[13px] text-gray-400 hover:text-white"
-                >
+                <a className="text-[13px] text-gray-400 hover:text-white">
                   Manage Cookies
                 </a>
               </li>
@@ -193,7 +130,7 @@ export default function FooterSection() {
             <h6 className="text-sm text-white font-medium">SOCIAL MEDIA</h6>
             <ul className="flex space-x-4">
               <li>
-                <a href="javascript:void(0)">
+                <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="fill-blue-600 w-8 h-8"
@@ -207,7 +144,7 @@ export default function FooterSection() {
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0)">
+                <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-8 h-8"
@@ -229,7 +166,7 @@ export default function FooterSection() {
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0)">
+                <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-8 h-8"
@@ -242,13 +179,7 @@ export default function FooterSection() {
                       y1="22.26"
                       y2="129.74"
                       gradientUnits="userSpaceOnUse"
-                    >
-                      <stop offset="0" stop-color="#fae100" />
-                      <stop offset=".15" stop-color="#fcb720" />
-                      <stop offset=".3" stop-color="#ff7950" />
-                      <stop offset=".5" stop-color="#ff1c74" />
-                      <stop offset="1" stop-color="#6c1cd1" />
-                    </linearGradient>
+                    ></linearGradient>
                     <g data-name="Layer 2">
                       <g data-name="03.Instagram">
                         <rect
@@ -279,7 +210,7 @@ export default function FooterSection() {
                 </a>
               </li>
               <li>
-                <a href="javascript:void(0)">
+                <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-8 h-8"
@@ -303,10 +234,7 @@ export default function FooterSection() {
                 Get exclusive assets sent straight to your inbox
               </h6>
               <div className="mt-6">
-                <a
-                  href="javascript:void(0)"
-                  className="bg-blue-600 hover:bg-blue-700 text-sm text-white font-medium py-3 px-6 tracking-wide rounded"
-                >
+                <a className="bg-blue-600 hover:bg-blue-700 text-sm text-white font-medium py-3 px-6 tracking-wide rounded">
                   Sign up
                 </a>
               </div>

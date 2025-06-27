@@ -1,0 +1,41 @@
+{
+  "status": "success",
+  "numOfCartItems": 2,
+  "data": {
+    "totalCartPrice": 2498,
+    "products": [
+      {
+        "_id": "prod001",
+        "title": "iPhone 15 Pro Max",
+        "description": "256GB, Titanium, A17 Pro chip",
+        "price": 1499,
+        "count": 1,
+        "imageCover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlndpwDalSNF8TzBG6T7kGv73l0IOReNJpKw&s"
+      },
+      {
+        "_id": "prod002",
+        "title": "Samsung Galaxy S24 Ultra",
+        "description": "512GB, Phantom Black, Snapdragon 8 Gen 3",
+        "price": 999,
+        "count": 1,
+        "imageCover": "https://d2v5dzhdg4zhx3.cloudfront.net/web-assets/images/storypages/primary/ProductShowcasesampleimages/JPEG/Product+Showcase-1.jpg"
+      },
+      {
+        "_id": "prod002",
+        "title": "Samsung Galaxy S24 Ultra",
+        "description": "512GB, Phantom Black, Snapdragon 8 Gen 3",
+        "price": 999,
+        "count": 1,
+        "imageCover": "https://d2v5dzhdg4zhx3.cloudfront.net/web-assets/images/storypages/primary/ProductShowcasesampleimages/JPEG/Product+Showcase-1.jpg"
+      },
+      {
+        "_id": "prod002",
+        "title": "Samsung Galaxy S24 Ultra",
+        "description": "512GB, Phantom Black, Snapdragon 8 Gen 3",
+        "price": 999,
+        "count": 1,
+        "imageCover": "https://d2v5dzhdg4zhx3.cloudfront.net/web-assets/images/storypages/primary/ProductShowcasesampleimages/JPEG/Product+Showcase-1.jpg"
+      }
+    ]
+  }
+}

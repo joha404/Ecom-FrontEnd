@@ -22,6 +22,8 @@ export default function UserProfileDropdown() {
 
   const handleSignOut = () => {
     localStorage.removeItem("userToken");
+    localStorage.removeItem("userMail");
+    localStorage.removeItem("userInfo");
     window.location.href = "/login";
   };
 
@@ -40,7 +42,7 @@ export default function UserProfileDropdown() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-3 w-52 bg-white dark:bg-gray-800 shadow-xl rounded-xl z-50 overflow-hidden ring-1 ring-black/10 dark:ring-white/10"
+            className="absolute right-0 mt-3 w-52 bg-white  shadow-xl rounded-xl z-50 overflow-hidden ring-1 ring-black/10 dark:ring-white/10"
           >
             <li>
               <Link

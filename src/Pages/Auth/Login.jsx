@@ -23,27 +23,31 @@ export default function Login() {
       email: "",
       password: "",
     },
+    validationSchema: schema,
     onSubmit: async (values) => {
       setIsLoading(true);
+      setErrorvlu(null);
+      setSuccessMsg(null);
+
       try {
         const response = await loginUser(values);
+        console.log(response.data.user);
         setSuccessMsg(response.data.message);
         localStorage.setItem("userToken", response.data.token);
+        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
 
         toast.success("Login Successfully");
 
-        // Use navigate for client-side routing, no page reload
         setTimeout(() => {
           navigate("/");
-        }, 500);
+          setIsLoading(false);
+        }, 1500);
       } catch (error) {
         setErrorvlu(error.response?.data?.message || "An error occurred");
         toast.error("Something went wrong");
-      } finally {
         setIsLoading(false);
       }
     },
-    validationSchema: schema,
   });
 
   return (
@@ -114,10 +118,10 @@ export default function Login() {
           <button
             disabled={isLoading}
             type="submit"
-            className="w-full text-white bg-green-700 hover:bg-green-800 disabled:bg-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700"
+            className="w-full text-white bg-green-700 hover:bg-green-800 disabled:bg-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 h-10 flex justify-center items-center"
           >
             {isLoading ? (
-              <FaSpinner className="animate-spin inline-block text-white text-xl" />
+              <FaSpinner className="animate-spin inline-block text-white text-xl mr-2" />
             ) : (
               "Login"
             )}
@@ -126,7 +130,7 @@ export default function Login() {
 
         {/* Links */}
         <p className="text-green-600 font-semibold text-center mt-4">
-          <Link to="/forget" className="hover:underline">
+          <Link to="/email-verification" className="hover:underline">
             Forget Password?
           </Link>
         </p>

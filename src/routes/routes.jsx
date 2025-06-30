@@ -1,6 +1,5 @@
 import { useRoutes } from "react-router-dom";
 import Layout from "../Components/Layout/Layout";
-import Brands from "../Components/Brands/Brands";
 import Products from "../Pages/Product/Products";
 import ProtectedRoute from "../Components/ProtectedRoute/ProtectedRoute";
 import ProductDetails from "../Pages/Product/ProductDetails";
@@ -17,9 +16,21 @@ import ResetCode from "../Pages/Auth/ResetCode";
 import ResetPassword from "../Pages/Auth/ResetPassword";
 import Categories from "../Pages/Category/Categories";
 import Profile from "../Pages/Profile/Profile";
+import Setting from "../Pages/Setting/Setting";
+import OTPVerification from "../Pages/Auth/OTPVerification";
+import ForgetPasswordResetCode from "../Pages/Auth/ForgetPassword";
 
 export default function AppRoutes() {
   return useRoutes([
+    // Public/auth routes, no Layout wrapper
+    { path: "login", element: <Login /> },
+    { path: "register", element: <Register /> },
+    { path: "forget", element: <ForgetPasswordResetCode /> },
+    { path: "email-verification", element: <ResetCode /> },
+    { path: "resetpassword", element: <ResetPassword /> },
+    { path: "otp-verification", element: <OTPVerification /> },
+
+    // Protected routes with Layout wrapper
     {
       path: "/",
       element: <Layout />,
@@ -40,11 +51,6 @@ export default function AppRoutes() {
             </ProtectedRoute>
           ),
         },
-        { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
-        { path: "forget", element: <ForgetPassword /> },
-        { path: "resetcode", element: <ResetCode /> },
-        { path: "resetpassword", element: <ResetPassword /> },
         {
           path: "categories",
           element: (
@@ -54,18 +60,18 @@ export default function AppRoutes() {
           ),
         },
         {
-          path: "brands",
-          element: (
-            <ProtectedRoute>
-              <Brands />
-            </ProtectedRoute>
-          ),
-        },
-        {
           path: "products",
           element: (
             <ProtectedRoute>
               <Products />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "settings",
+          element: (
+            <ProtectedRoute>
+              <Setting />
             </ProtectedRoute>
           ),
         },

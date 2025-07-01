@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/v1";
+const BASE_URL = "https://ecommerce-backend-q3ag.onrender.com/api/v1";
 
+// Sign In user
 export const signInUser = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/auth/signup`, data, {
@@ -14,6 +15,7 @@ export const signInUser = async (data) => {
   }
 };
 
+// login in user
 export const loginUser = async (data) => {
   try {
     const res = axios.post(`${BASE_URL}/auth/login`, data);
@@ -23,6 +25,7 @@ export const loginUser = async (data) => {
   }
 };
 
+//  Resend Code to email
 export const resendCode = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/auth/forgot-password`, data, {
@@ -35,6 +38,7 @@ export const resendCode = async (data) => {
   }
 };
 
+// Forget Password Reset
 export const forgerPasswordReset = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/auth/verify-email`, data, {
@@ -47,6 +51,7 @@ export const forgerPasswordReset = async (data) => {
   }
 };
 
+// Verify Email Adress
 export const verifyUserMail = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/auth/verify-email`, data, {
@@ -59,11 +64,23 @@ export const verifyUserMail = async (data) => {
   }
 };
 
+// Password Change
 export const changeUserPassword = async (data) => {
   try {
     const res = await axios.post(`${BASE_URL}/auth/change-password`, data, {
       headers: { "Content-Type": "application/json" },
     });
+    return res;
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Get Single User
+export const singleUser = async (id) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/user/${id}`, {});
     return res;
   } catch (error) {
     console.log(error.response?.data || error.message);

@@ -84,7 +84,7 @@ export default function AppRoutes() {
           ),
         },
         {
-          path: "productDetails/:id/:name",
+          path: "productDetails/:id",
           element: (
             <ProtectedRoute>
               <ProductDetails />

@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import RecentProducts from "../RecentProducts/RecentProducts";
+import Loading from "../Loading/Loading";
+import { getSingleProduct } from "../../api/product/product";
 
 export default function ProductDetailsComponent() {
-  const [mainImage, setMainImage] = useState(
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
-  );
-
-  const thumbnails = [
-    "https://images.unsplash.com/photo-1505751171710-1f6d0ace5a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    "https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    "https://images.unsplash.com/photo-1496957961599-e35b69ef5d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-    "https://images.unsplash.com/photo-1528148343865-51218c4a13e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-  ];
-
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      fetchProductDetails(id);
+    }
+  }, [id]);
+
+  const fetchProductDetails = async (id) => {
+    try {
+      setLoading(true);
+      const res = await getSingleProduct(id);
+      const fetchedProduct = res.data?.product;
+      setProduct(fetchedProduct);
+      setMainImage(fetchedProduct?.images?.[0]);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -23,24 +39,37 @@ export default function ProductDetailsComponent() {
     setQuantity(quantity + 1);
   };
 
+  if (loading || !product) return <Loading />;
+
+  // Normalize features to array
+  const featuresArray = Array.isArray(product.features)
+    ? product.features
+    : typeof product.features === "string"
+    ? product.features.split(",").map((f) => f.trim())
+    : [];
+
   return (
-    <div className="">
+    <div>
       <div className="container mx-auto px-4 py-8 bg-gray-100">
         <div className="flex flex-wrap -mx-4">
           {/* Left - Images */}
           <div className="w-full md:w-1/2 px-4 mb-8">
             <img
               src={mainImage}
-              alt="Product"
+              alt={product?.name}
               className="w-full h-auto rounded-lg shadow-md mb-4"
             />
             <div className="flex gap-4 py-4 justify-center overflow-x-auto">
-              {thumbnails.map((thumb, i) => (
+              {product.images?.map((thumb, i) => (
                 <img
                   key={i}
                   src={thumb}
                   alt={`Thumbnail ${i + 1}`}
-                  className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                  className={`size-16 sm:size-20 object-cover rounded-md cursor-pointer transition duration-300 ${
+                    mainImage === thumb
+                      ? "opacity-100"
+                      : "opacity-60 hover:opacity-100"
+                  }`}
                   onClick={() => setMainImage(thumb)}
                 />
               ))}
@@ -49,13 +78,15 @@ export default function ProductDetailsComponent() {
 
           {/* Right - Product Info */}
           <div className="w-full md:w-1/2 px-4">
-            <h2 className="text-3xl font-bold mb-2">
-              Premium Wireless Headphones
-            </h2>
-            <p className="text-gray-600 mb-4">SKU: WH1000XM4</p>
+            <h2 className="text-3xl font-bold mb-2">{product?.name}</h2>
+            <p className="text-gray-600 mb-4">SKU: {product?._id}</p>
             <div className="mb-4">
-              <span className="text-2xl font-bold mr-2">$349.99</span>
-              <span className="text-gray-500 line-through">$399.99</span>
+              <span className="text-2xl font-bold mr-2">${product.price}</span>
+              {product.oldPrice && (
+                <span className="text-gray-500 line-through">
+                  ${product.oldPrice}
+                </span>
+              )}
             </div>
 
             {/* Ratings */}
@@ -82,11 +113,7 @@ export default function ProductDetailsComponent() {
               <span className="ml-2 text-gray-600">4.5 (120 reviews)</span>
             </div>
 
-            <p className="text-gray-700 mb-6">
-              Experience premium sound quality and industry-leading noise
-              cancellation with these wireless headphones. Perfect for music
-              lovers and frequent travelers.
-            </p>
+            <p className="text-gray-700 mb-6">{product?.description}</p>
 
             {/* Quantity */}
             <div className="mb-6">
@@ -96,7 +123,6 @@ export default function ProductDetailsComponent() {
               >
                 Quantity:
               </label>
-
               <div className="flex items-center rounded-full overflow-hidden border border-gray-300 w-max bg-white shadow-sm">
                 <button
                   onClick={handleDecrease}
@@ -108,13 +134,12 @@ export default function ProductDetailsComponent() {
                 <input
                   type="number"
                   id="quantity"
-                  name="quantity"
                   min="1"
                   value={quantity}
                   onChange={(e) =>
                     setQuantity(Math.max(1, Number(e.target.value)))
                   }
-                  className="w-12 text-center text-base font-medium text-gray-700 focus:outline-none focus:ring-0 border-0 bg-white appearance-none"
+                  className="w-12 text-center text-base font-medium text-gray-700 focus:outline-none focus:ring-0 border-0 bg-white"
                 />
                 <button
                   onClick={handleIncrease}
@@ -141,9 +166,10 @@ export default function ProductDetailsComponent() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75
-                     m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 
-                     14.25L5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 
-                     0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                      m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 
+                      0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 
+                      0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 
+                      0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
                   />
                 </svg>
                 Add to Cart
@@ -171,19 +197,22 @@ export default function ProductDetailsComponent() {
               </button>
             </div>
 
-            {/* Key Features */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Key Features:</h3>
-              <ul className="list-disc list-inside text-gray-700">
-                <li>Industry-leading noise cancellation</li>
-                <li>30-hour battery life</li>
-                <li>Touch sensor controls</li>
-                <li>Speak-to-chat technology</li>
-              </ul>
-            </div>
+            {/* Features */}
+            {featuresArray.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Key Features:</h3>
+                <ul className="list-disc list-inside text-gray-700">
+                  {featuresArray.map((feature, idx) => (
+                    <li key={idx}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Recently Viewed or Related Products */}
       <RecentProducts />
     </div>
   );

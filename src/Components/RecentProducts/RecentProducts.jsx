@@ -1,11 +1,27 @@
-import ProductItem from "../ProductItem/ProductItem";
-import Loading from "../Loading/Loading";
-import useProducts from "../../CustomHooks/useProducts";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
+import ProductItem from "../ProductItem/ProductItem";
+import Loading from "../Loading/Loading";
+import { getAllProduct } from "../../api/product/product";
 
 export default function RecentProducts() {
-  const { data, isLoading } = useProducts();
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+        const res = await getAllProduct();
+        setData(res.data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []); // ✅ added dependency array
 
   if (isLoading) {
     return <Loading />;
@@ -35,7 +51,13 @@ export default function RecentProducts() {
 
   return (
     <>
-      <h1 className="mt-12 mb-4">All Recent Products</h1>
+      <Helmet>
+        <title>Recent Products</title>
+      </Helmet>
+
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mt-12 mb-4 text-center">
+        All Recent Products
+      </h1>
 
       <motion.div
         className="grid mt-8 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
@@ -43,7 +65,7 @@ export default function RecentProducts() {
         initial="hidden"
         animate="visible"
       >
-        {data.slice(0, 8).map((product) => (
+        {data?.map((product) => (
           <motion.div
             key={product._id}
             variants={itemVariants}

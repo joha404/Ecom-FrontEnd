@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function UserInfo({ user }) {
+export default function UserInfo({ user, userInformation }) {
   return (
     <div className="flex items-center gap-6 mb-10 p-2">
       <img
@@ -11,11 +11,13 @@ export default function UserInfo({ user }) {
 
       <div>
         <h1 className="text-3xl font-serif text-gray-900 dark:text-white">
-          {user.fullName}
+          {userInformation?.name}
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">{user.details.email}</p>
         <p className="text-gray-600 dark:text-gray-300">
-          {user.details.phoneNumber}
+          {userInformation?.email}
+        </p>
+        <p className="text-gray-600 dark:text-gray-300">
+          {userInformation?.number}
         </p>
       </div>
     </div>

@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { addToCartThunk } from "../../api/product/cart";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 export default function ProductItem({ product }) {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
   const overlayVariants = {
     hidden: { opacity: 0, y: 50, scale: 0.95 },
     visible: {
@@ -12,6 +19,36 @@ export default function ProductItem({ product }) {
       scale: 1,
       transition: { duration: 0.4, ease: "easeOut" },
     },
+  };
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userId = userInfo?._id || userInfo?.id;
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!userId) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await dispatch(
+        addToCartThunk({
+          userId,
+          productId: product._id,
+          quantity: 1,
+        })
+      );
+      toast.success("Product added to cart!");
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      toast.error("Failed to add product to cart.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,7 +102,7 @@ export default function ProductItem({ product }) {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            // Add to wishlist logic here
+            // Wishlist logic can go here
           }}
           className="text-white text-xl hover:text-red-400 transition pointer-events-auto"
           whileTap={{ scale: 0.9 }}
@@ -74,16 +111,45 @@ export default function ProductItem({ product }) {
         </motion.button>
 
         <motion.button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // Add to cart logic here
-          }}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 pointer-events-auto"
+          onClick={handleAddToCart}
+          disabled={isLoading}
+          className={`${
+            isLoading
+              ? "cursor-not-allowed bg-green-400"
+              : "bg-green-600 hover:bg-green-700"
+          } text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 pointer-events-auto transition duration-200`}
           whileTap={{ scale: 0.95 }}
         >
-          <FiShoppingCart />
-          Add to Cart
+          {isLoading ? (
+            <>
+              <svg
+                className="w-4 h-4 animate-spin text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+              <span>Adding...</span>
+            </>
+          ) : (
+            <>
+              <FiShoppingCart />
+              Add to Cart
+            </>
+          )}
         </motion.button>
       </motion.div>
     </motion.div>

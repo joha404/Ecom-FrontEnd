@@ -1,10 +1,22 @@
-import { Helmet } from "react-helmet";
-import useCategories from "../../CustomHooks/useCategories";
 import Loading from "../../Components/Loading/Loading";
+import { getAllCategories } from "../../api/category/category";
+import { useEffect, useState } from "react";
 
 export default function Categories() {
-  //custom hook
-  const { data, isLoading } = useCategories();
+  const [categoryData, setCategoryData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const allCategories = async () => {
+    try {
+      const res = await getAllCategories();
+      setCategoryData(res.data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    setIsLoading(true);
+    allCategories();
+    setIsLoading(false);
+  }, []);
   if (isLoading) {
     return <Loading />;
   }
@@ -13,7 +25,7 @@ export default function Categories() {
       <div></div>
       <div className="px-4 sm:px-6 lg:px-10 max-w-screen-xl mx-auto mt-32">
         <div className="grid mt-8 gap-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-          {data.map((category) => (
+          {categoryData.map((category) => (
             <div
               key={category._id}
               className="bg-gray-200 rounded-3xl shadow-lg p-4 transition-transform transform hover:scale-105"

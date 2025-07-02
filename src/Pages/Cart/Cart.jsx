@@ -5,9 +5,17 @@ import { FaRegHeart } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import mockCartData from "./cartJson.json";
+import { getAllCart } from "../../api/product/cart";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState(null);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userId = userInfo.id;
+
+  const cartData = async () => {
+    const res = await getAllCart(userId);
+    console.log(res);
+  };
   useEffect(() => {
     // Simulate fetching from backend
     setCartItems(mockCartData);

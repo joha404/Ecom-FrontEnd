@@ -1,13 +1,15 @@
-// components/settings/Setting.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import PasswordSection from "../../Components/setting/PasswordSection";
 import ProfileForm from "../../Components/setting/ProfileForm";
-import AvatarUploader from "../../Components/setting/AvatarUploader";
 import Button from "../../Components/common/Button";
+import { getProfile, updateProfile } from "../../api/auth/profile";
+import toast from "react-hot-toast";
 
 export default function Setting() {
+  const [userData, setUserData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [tempAvatar, setTempAvatar] = useState(null);
 
@@ -16,34 +18,57 @@ export default function Setting() {
     handleSubmit,
     watch,
     reset,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      avatar:
-        "https://res.cloudinary.com/subframe/image/upload/v1711417513/shared/kwut7rhuyivweg8tmyzl.jpg",
-      firstName: "Md",
-      lastName: "Joha",
-      email: "mdjoha@example.com",
+      name: "",
+      email: "",
+      phoneNumber: "",
       bio: "",
       location: "",
       website: "",
-      social: { facebook: "", twitter: "", linkedin: "", github: "" },
-      password: "",
-      newPassword: "",
-      confirmPassword: "",
+      gender: "",
+      dateOfBirth: "",
+      social: { facebook: "", instagram: "" },
     },
   });
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setTempAvatar(URL.createObjectURL(file));
-    }
+  const fetchProfile = async () => {
+    setIsLoading(true);
+    const res = await getProfile();
+    setUserData(res);
+    setIsLoading(false);
   };
 
-  const onSubmit = (data) => {
-    console.log("Saved data:", data);
-    setIsEditing(false);
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    if (userData) {
+      setValue("name", userData.user?.name || "");
+      setValue("email", userData.user?.email || "");
+      setValue("phoneNumber", userData.phoneNumber || "");
+      setValue("bio", userData.bio || "");
+      setValue("location", userData.location || "");
+      setValue("website", userData.website || "");
+      setValue("gender", userData.gender || "");
+      setValue("dateOfBirth", userData.dateOfBirth?.split("T")[0] || "");
+      setValue("social.facebook", userData.socialLinks?.facebook || "");
+      setValue("social.instagram", userData.socialLinks?.instagram || "");
+    }
+  }, [userData, setValue]);
+
+  const onSubmit = async (data) => {
+    try {
+      await updateProfile(data);
+      setIsEditing(false);
+      toast.success("Your Profile Updated Successfully");
+    } catch (error) {
+      console.error("Update failed:", error);
+      toast.error("Something went wrong!");
+    }
   };
 
   const handleChangePassword = (data) => {
@@ -88,18 +113,47 @@ export default function Setting() {
                 <Button type="button" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button type="submit">Save</Button>
+                <Button
+                  type="submit"
+                  className="relative px-4 py-2 bg-blue-600 text-white rounded-md font-medium flex items-center justify-center hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <span>Save</span>
+                  )}
+                </Button>
               </>
             )}
           </div>
         </div>
 
-        <AvatarUploader
+        <ProfileForm
+          register={register}
+          setValue={setValue}
           isEditing={isEditing}
-          avatarUrl={avatarUrl}
-          onChange={handleAvatarChange}
         />
-        <ProfileForm register={register} isEditing={isEditing} />
+
         <PasswordSection
           isEditing={isEditing}
           register={register}

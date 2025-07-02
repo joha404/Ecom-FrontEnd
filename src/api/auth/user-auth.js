@@ -80,7 +80,7 @@ export const changeUserPassword = async (data) => {
 // Get Single User
 export const singleUser = async (id) => {
   try {
-    const res = await axios.get(`${BASE_URL}/user/${id}`, {});
+    const res = await axios.get(`${BASE_URL}/user/${id}`);
     return res;
   } catch (error) {
     console.log(error.response?.data || error.message);

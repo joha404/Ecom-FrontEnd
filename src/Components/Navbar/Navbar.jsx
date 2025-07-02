@@ -6,6 +6,7 @@ import DesktopMenu from "../../shared/navbar/DesktopMenu.jsx";
 import MobileMenu from "../../shared/navbar/MobileMenu.jsx";
 import MenuToggleButton from "../../shared/navbar/MenuToggleButton.jsx";
 import SearchInput from "../common/SearchInput";
+import { useSelector } from "react-redux";
 
 export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +14,8 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [query, setQuery] = useState("");
+  const cartItems = useSelector((state) => state.cart.cartItem);
+  const cartCount = cartItems.length;
 
   useEffect(() => {
     setToken(localStorage.getItem("userToken"));

@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { LuShoppingCart } from "react-icons/lu";
 import { FaRegHeart } from "react-icons/fa";
 import UserProfileDropdown from "../../Components/Navbar/UserProfileDropdown";
+import { useSelector } from "react-redux";
 
 export default function MobileMenu({
   isMenuOpen,
@@ -11,6 +12,8 @@ export default function MobileMenu({
   numOfCartItems,
   wishlistCount,
 }) {
+  const cartItems = useSelector((state) => state.cart.cartItem);
+  const cartCount = cartItems?.items?.length;
   return (
     <AnimatePresence>
       {isMenuOpen && (
@@ -65,9 +68,9 @@ export default function MobileMenu({
               >
                 <LuShoppingCart className="inline mr-2 text-2xl" />
                 Cart
-                {numOfCartItems > 0 && (
+                {cartCount > 0 && (
                   <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                    {numOfCartItems}
+                    {cartCount}
                   </span>
                 )}
               </NavLink>

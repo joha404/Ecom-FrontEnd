@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserInfo from "../../Components/user/userInfo";
 import OrderTable from "../../Components/order/OrderTable";
 import OrderCardList from "../../Components/order/OrderCardList";
-import Address from "../../Components/address/address";
+import Address from "../../Components/address/Address";
 import { singleUser } from "../../api/auth/user-auth";
 
 export default function Profile() {

@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RightSide({ cartItems }) {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
@@ -27,11 +29,17 @@ export default function RightSide({ cartItems }) {
           </div>
         </div>
 
-        <button className="w-full rounded-md bg-green-500 px-4 py-2 text-white font-medium hover:bg-green-600">
+        <button
+          onClick={() => navigate("/checkout")}
+          className="w-full rounded-md bg-green-500 px-4 py-2 text-white font-medium hover:bg-green-600"
+        >
           Proceed to Checkout
         </button>
 
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+        <div
+          onClick={() => navigate("/")}
+          className="text-center text-sm text-gray-500 dark:text-gray-400"
+        >
           Continue Shopping
         </div>
       </div>

@@ -1,103 +1,81 @@
-import { useFormik } from "formik";
-import { useContext, useState } from "react";
-import { Helmet } from "react-helmet";
-import { FaSpinner } from "react-icons/fa";
-import { CartContext } from "../../Context/CartContext";
-import toast from "react-hot-toast";
+import React, { useState, useEffect } from "react";
+import AddressCard from "../../Components/address/AddressCard"; // Should support selection UI
+import { getAddress } from "../../api/user/address";
+import OrderSummary from "../../Components/Checkout/OrderSummary";
 
 export default function CheckOut() {
-  const { checkOut, cartID } = useContext(CartContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const checkoutFormik = useFormik({
-    initialValues: {
-      details: "",
-      phone: "",
-      city: "",
-    },
-    onSubmit: async (values) => {
-      setIsLoading(true);
-      const res = await checkOut(cartID, values);
-      console.log("res", res);
-      setIsLoading(false);
-      if (res.data.status === "success") {
-        toast.success(res.data.status);
-        window.location.href = res.data.session.url;
-      }
-    },
-  });
+  const fetchAddress = async () => {
+    const userDetails = localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null;
+    const userProfileId = userDetails?.id;
+
+    try {
+      const res = await getAddress(userProfileId);
+      setAddresses(res || []);
+      setSelectedAddressId(res?.[0]?._id || null);
+    } catch (error) {
+      console.error("Failed to fetch addresses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+
+  if (loading)
+    return <div className="text-center mt-10">Loading addresses...</div>;
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center p-4 dark:bg-[#111827] bg-gray-100">
-      <div className="bg-white dark:bg-[#374151] shadow-sm rounded-lg p-8 max-w-md w-full">
-        <h2 className="text-green-600 text-2xl mb-6">CheckOut</h2>
-        <form onSubmit={checkoutFormik.handleSubmit} className="space-y-5">
-          {/* Details */}
-          <div className="relative z-0 w-full group">
-            <input
-              {...checkoutFormik.getFieldProps("details")}
-              type="text"
-              name="details"
-              id="details"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="details"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-green-600 peer-focus:dark:text-green-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              User Details:
-            </label>
-          </div>
+    <div className="bg-white sm:px-8 px-4 py-6 mt-32">
+      <div className="max-w-screen-xl max-md:max-w-xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8 lg:gap-x-12">
+          <div className="lg:col-span-2">
+            <h2 className="text-xl text-slate-900 font-semibold mb-6">
+              Select a Delivery Address
+            </h2>
+            <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
+              {addresses.map((addr) => (
+                <AddressCard
+                  key={addr._id}
+                  addr={addr}
+                  selectedAddressId={selectedAddressId}
+                  setSelectedAddressId={setSelectedAddressId}
+                />
+              ))}
+            </div>
 
-          {/* Phone */}
-          <div className="relative z-0 w-full group">
-            <input
-              {...checkoutFormik.getFieldProps("phone")}
-              type="tel"
-              name="phone"
-              id="phone"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="phone"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-green-600 peer-focus:dark:text-green-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              User Phone:
-            </label>
-          </div>
-
-          {/* City */}
-          <div className="relative z-0 w-full group">
-            <input
-              {...checkoutFormik.getFieldProps("city")}
-              type="text"
-              name="city"
-              id="city"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="city"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-green-600 peer-focus:dark:text-green-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              User City:
-            </label>
-          </div>
-
-          <button
-            disabled={isLoading}
-            type="submit"
-            className="text-white bg-green-700 disabled:bg-green-100 disabled:text-gray-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          >
-            {isLoading ? (
-              <FaSpinner className="animate-spin inline-block dark:text-white text-xl" />
-            ) : (
-              "Pay Now"
+            {/* Optional confirmation */}
+            {selectedAddressId && (
+              <p className="mt-6 text-sm text-green-600">
+                Selected Address ID: <strong>{selectedAddressId}</strong>
+              </p>
             )}
-          </button>
-        </form>
+          </div>
+
+          <div className="relative">
+            <OrderSummary
+              subtotal={72}
+              discount={0}
+              shipping={6}
+              tax={5}
+              onPurchase={() => {
+                console.log("Purchase completed!");
+                // Implement checkout logic
+              }}
+              onContinue={() => {
+                console.log("Continue shopping clicked");
+                // Redirect to shop page, etc.
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

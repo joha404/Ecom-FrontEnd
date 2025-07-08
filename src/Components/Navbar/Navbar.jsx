@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "./../../assets/images/freshcart-logo.svg";
@@ -7,6 +7,8 @@ import MobileMenu from "../../shared/navbar/MobileMenu.jsx";
 import MenuToggleButton from "../../shared/navbar/MenuToggleButton.jsx";
 import SearchInput from "../common/SearchInput";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { SearchProduct } from "../../api/product/product.js";
 
 export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,8 +16,10 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const cartItems = useSelector((state) => state.cart.cartItem);
   const cartCount = cartItems.length;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setToken(localStorage.getItem("userToken"));
@@ -33,6 +37,41 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  // Fetch suggestions when query changes
+  useEffect(() => {
+    if (!query) {
+      setSuggestions([]);
+      return;
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        // If SearchProduct expects a query string param, pass it like this:
+        const res = await SearchProduct(encodeURIComponent(query));
+
+        // Or if it expects an object with a 'query' property:
+        // const res = await SearchProduct({ query: encodeURIComponent(query) });
+        console.log(res.data.data);
+
+        if (res.data && res.data.data) {
+          setSuggestions(res.data.data);
+        } else {
+          setSuggestions([]);
+        }
+      } catch (error) {
+        console.error("Error fetching product suggestions:", error);
+        setSuggestions([]);
+      }
+    };
+
+    fetchSuggestions();
+  }, [query]);
+
+  const handleSelectSuggestion = (product) => {
+    console.log(product._id);
+    navigate(`/productDetails/${product._id}`);
+  };
 
   return (
     <>
@@ -57,6 +96,8 @@ export default function Navbar({ numOfCartItems = 0, wishlistCount = 0 }) {
                   value={query}
                   onChange={setQuery}
                   placeholder="Search products..."
+                  suggestions={suggestions}
+                  onSelectSuggestion={handleSelectSuggestion}
                 />
               </div>
 

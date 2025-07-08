@@ -1,14 +1,56 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { createPayment } from "../../api/payment/payment";
+import { useNavigate } from "react-router-dom";
+import PrimaryButton from "../../Components/common/PrimaryButton";
 const OrderSummary = ({
   subtotal,
   discount,
   shipping,
   tax,
-  onPurchase,
+  address,
   onContinue,
+  userInfo,
+  cartDetails,
 }) => {
   const total = subtotal - discount + shipping + tax;
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  console.log(cartDetails);
+  const handlePurchase = async () => {
+    const cart = cartDetails.map((item) => ({
+      product: item.productId._id || item.product,
+      quantity: item.quantity,
+      price: item?.price,
+      total: item.quantity * item?.price,
+    }));
+
+    const payload = {
+      user: {
+        _id: userInfo?.id || userInfo?._id,
+        role: userInfo?.role,
+        name: userInfo?.name,
+        email: userInfo?.email,
+        number: userInfo?.number,
+      },
+      addresses: [address],
+      cart,
+      totalAmount: total,
+      paymentMethod: "SSLCommerz",
+    };
+    console.log(payload);
+
+    try {
+      setIsLoading(true);
+      const res = await createPayment(payload);
+      setIsLoading(false);
+
+      window.location.href = res.data.url;
+      console.log("✅ Payment initiated:");
+    } catch (err) {
+      console.error("❌ Payment failed:", err);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -40,20 +82,21 @@ const OrderSummary = ({
             ${tax.toFixed(2)}
           </span>
         </li>
-        <hr className="border-slate-300" />
+        <hr className="border-slate-300 w-full my-2" />
         <li className="flex flex-wrap gap-4 text-[15px] font-semibold text-slate-900">
           Total <span className="ml-auto">${total.toFixed(2)}</span>
         </li>
       </ul>
 
       <div className="space-y-4 mt-8">
-        <button
+        <PrimaryButton
+          isSubmitting={isLoading}
           type="button"
-          onClick={onPurchase}
+          onClick={handlePurchase}
           className="rounded-md px-4 py-2.5 w-full text-sm font-medium tracking-wide bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
         >
           Complete Purchase
-        </button>
+        </PrimaryButton>
         <button
           type="button"
           onClick={onContinue}

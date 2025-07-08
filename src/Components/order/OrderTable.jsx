@@ -1,143 +1,115 @@
-export default function OrderTable({ orders, onCancel, skeletonRows = 3 }) {
-  if (!orders) {
-    // Render skeleton rows while loading
-    return (
-      <div className="overflow-x-auto rounded-lg shadow-md hidden sm:block">
-        <table className="min-w-full border-collapse border border-gray-300 dark:border-gray-700 text-sm sm:text-base">
-          <thead>
-            <tr className="bg-gray-100 dark:bg-gray-700 text-left">
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Product
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Name
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Qty
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Price ($)
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Status
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2 max-w-[120px]">
-                Transaction ID
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Order Date
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Delivery Date
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-                Cancel
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: skeletonRows }).map((_, i) => (
-              <tr key={i} className="animate-pulse">
-                {[...Array(9)].map((__, idx) => (
-                  <td
-                    key={idx}
-                    className="border border-gray-300 dark:border-gray-600 px-3 py-2"
-                  >
-                    <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
+import React, { useEffect, useState } from "react";
+import { getSingleProduct } from "../../api/product/product";
+
+export default function OrderTable({ orders = [], onCancel }) {
+  const [productMap, setProductMap] = useState({});
+  const [productDetails, setProductDetails] = useState({});
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const uniqueProductIds = new Set();
+      orders?.forEach((order) => {
+        order?.cart?.forEach((item) => {
+          if (!productMap[item.product]) {
+            uniqueProductIds.add(item.product);
+          }
+        });
+      });
+
+      const productEntries = await Promise.all(
+        Array.from(uniqueProductIds).map(async (id) => {
+          try {
+            const res = await getSingleProduct(id);
+
+            setProductDetails(res.data.product);
+            return [id, res.data.product];
+          } catch (err) {
+            console.error("Failed to fetch product:", id, err);
+            return [id, null];
+          }
+        })
+      );
+
+      const newProductMap = {};
+      productEntries.forEach(([id, product]) => {
+        if (product) newProductMap[id] = product;
+      });
+
+      setProductMap((prev) => ({ ...prev, ...newProductMap }));
+    };
+
+    fetchProducts();
+  }, [orders]);
+
   return (
     <div className="overflow-x-auto rounded-lg shadow-md hidden sm:block">
       <table className="min-w-full border-collapse border border-gray-300 dark:border-gray-700 text-sm sm:text-base">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-700 text-left">
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Product
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Name
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Qty
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Price ($)
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Status
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2 max-w-[120px]">
-              Transaction ID
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Order Date
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Delivery Date
-            </th>
-            <th className="border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-2">
-              Cancel
-            </th>
+            <th className="border px-3 py-2">Product</th>
+            <th className="border px-3 py-2">Name</th>
+            <th className="border px-3 py-2">Qty</th>
+            <th className="border px-3 py-2">Price ($)</th>
+            <th className="border px-3 py-2">Status</th>
+            <th className="border px-3 py-2">Transaction ID</th>
+            <th className="border px-3 py-2">Order Date</th>
+            <th className="border px-3 py-2">Delivery Status</th>
+            <th className="border px-3 py-2">Cancel</th>
           </tr>
         </thead>
         <tbody>
-          {orders &&
-            orders.map((order) =>
-              order.products.map((product) => (
+          {orders?.map((order) =>
+            order?.cart?.map((item, i) => {
+              const product = productMap[item.product] || {};
+              return (
                 <tr
-                  key={`${order.id}-${product.id}`}
+                  key={`${order._id}-${i}`}
                   className="hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 text-center py-2">
+                  <td className="border px-3 py-2 text-center">
                     <img
-                      src={product.image}
-                      alt={product.name}
+                      src={
+                        productDetails.images &&
+                        productDetails.images.length > 0
+                          ? productDetails.images[0]
+                          : "/placeholder.png"
+                      }
+                      alt={productDetails.name || "Product"}
                       className="w-12 h-12 object-cover rounded"
                     />
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2">
-                    {product.name}
+
+                  <td className="border px-3 py-2">
+                    {productDetails.name || item.product}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center">
-                    {product.quantity}
+                  <td className="border px-3 py-2 text-center">
+                    {item.quantity}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 ">
-                    {(product.price * product.quantity).toFixed(2)}
+                  <td className="border px-3 py-2">
+                    ${(item.price * item.quantity).toFixed(2)}
                   </td>
                   <td
-                    className={`border border-gray-300 dark:border-gray-600 px-3 py-2 ${
-                      order.status === "Delivered"
-                        ? "text-green-600 font-semibold"
+                    className={`border px-3 py-2 ${
+                      order.status === "Approved"
+                        ? "text-green-600"
                         : order.status === "Pending"
-                        ? "text-yellow-600 font-semibold"
-                        : order.status === "Rejected"
-                        ? "text-red-600 font-semibold"
-                        : ""
-                    }`}
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                    } font-semibold`}
                   >
                     {order.status}
                   </td>
-
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 break-words max-w-[150px]">
-                    {order.transactionId}
+                  <td className="border px-3 py-2 break-words max-w-[160px]">
+                    {order.tranjectionId}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2">
-                    {order.orderDate}
+                  <td className="border px-3 py-2">
+                    {new Date(order.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2">
-                    {order.deliveryDate}
-                  </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-3 py-2 text-center">
-                    {order.cancelable ? (
+                  <td className="border px-3 py-2">{order.deliveryStatus}</td>
+                  <td className="border px-3 py-2 text-center">
+                    {order.status === "Pending" ? (
                       <button
-                        onClick={() => onCancel(order.id)}
+                        onClick={() => onCancel(order._id)}
                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
                       >
                         Cancel
@@ -147,8 +119,9 @@ export default function OrderTable({ orders, onCancel, skeletonRows = 3 }) {
                     )}
                   </td>
                 </tr>
-              ))
-            )}
+              );
+            })
+          )}
         </tbody>
       </table>
     </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import UserInfo from "../../Components/user/userInfo";
 import OrderTable from "../../Components/order/OrderTable";
-import OrderCardList from "../../Components/order/OrderCardList";
 import Address from "../../Components/address/Address";
 import { singleUser } from "../../api/auth/user-auth";
+import { getAllOrders } from "../../api/payment/order";
 
 export default function Profile() {
   const [orders, setOrders] = useState(null);
@@ -23,6 +23,12 @@ export default function Profile() {
     : null;
 
   const userID = userDetails?.id;
+  const userEmail = userDetails?.email;
+
+  const fetchOrder = async () => {
+    const res = await getAllOrders(userID);
+    setOrders(res.data.orders);
+  };
 
   const fetchUserDetails = async (userID) => {
     try {
@@ -34,6 +40,7 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    fetchOrder();
     if (userID) {
       fetchUserDetails(userID);
     } else {
@@ -41,56 +48,6 @@ export default function Profile() {
     }
   }, [userID]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setOrders([
-        {
-          id: "ORD001",
-          transactionId: "TX123456789",
-          orderDate: "2025-06-01",
-          deliveryDate: "2025-06-07",
-          status: "Delivered",
-          cancelable: false,
-          products: [
-            {
-              id: "P001",
-              image:
-                "https://images.unsplash.com/photo-1523275335684-37898b6baf30?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D",
-              name: "Wireless Headphones",
-              quantity: 1,
-              price: 59.99,
-            },
-          ],
-        },
-        {
-          id: "ORD002",
-          transactionId: "TX987654321",
-          orderDate: "2025-06-10",
-          deliveryDate: "2025-06-18",
-          status: "Pending",
-          cancelable: true,
-          products: [
-            {
-              id: "P002",
-              image:
-                "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=64&h=64&q=80",
-              name: "Smartwatch",
-              quantity: 2,
-              price: 199.99,
-            },
-            {
-              id: "P003",
-              image:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBks98xcOTXXIYF3z87erbFfZ2RE4mWK5myQ&s",
-              name: "Bluetooth Speaker",
-              quantity: 1,
-              price: 89.99,
-            },
-          ],
-        },
-      ]);
-    }, 2000);
-  }, []);
   function handleCancelOrder(orderId) {
     alert(`Cancel order ${orderId} clicked! Implement cancel logic here.`);
   }
@@ -103,7 +60,7 @@ export default function Profile() {
           Your Orders
         </h2>
         <OrderTable orders={orders} onCancel={handleCancelOrder} />
-        <OrderCardList orders={orders} onCancel={handleCancelOrder} />
+        {/* <OrderCardList orders={orders} onCancel={handleCancelOrder} /> */}
         <Address />
       </div>
     </section>

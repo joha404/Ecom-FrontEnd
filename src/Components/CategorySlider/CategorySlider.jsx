@@ -1,9 +1,30 @@
 import Slider from "react-slick";
 import { Hearts } from "react-loader-spinner";
 import useCategories from "../../CustomHooks/useCategories";
+import { useEffect, useState } from "react";
+import Loading from "../Loading/Loading";
+import { getAllCategories } from "../../api/category/category";
 
 export default function CategorySlider() {
-  const { data, isLoading } = useCategories();
+  // const { data, isLoading } = useCategories();
+  const [categoryData, setCategoryData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const allCategories = async () => {
+    try {
+      const res = await getAllCategories();
+      console.log(res);
+      setCategoryData(res.data);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    setIsLoading(true);
+    allCategories();
+    setIsLoading(false);
+  }, []);
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   const settings = {
     dots: false,
@@ -45,7 +66,7 @@ export default function CategorySlider() {
       </h1>
 
       <Slider {...settings} className="mt-4 mb-6">
-        {data?.map((category) => (
+        {categoryData?.map((category) => (
           <div key={category._id} className="px-2 mb-6 cursor-pointer">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group h-[260px] flex flex-col justify-between">
               <div className="h-[180px] overflow-hidden">

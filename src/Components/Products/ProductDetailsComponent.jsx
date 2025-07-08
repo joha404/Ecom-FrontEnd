@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import RecentProducts from "../RecentProducts/RecentProducts";
 import Loading from "../Loading/Loading";
 import { getSingleProduct } from "../../api/product/product";
+import RelatedProduct from "./RelatedProduct";
 
 export default function ProductDetailsComponent() {
   const { id } = useParams();
@@ -10,18 +11,18 @@ export default function ProductDetailsComponent() {
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (id) {
-      fetchProductDetails(id);
-    }
-  }, [id]);
+  const [categoryId, setCategoryId] = useState("");
 
   const fetchProductDetails = async (id) => {
     try {
       setLoading(true);
       const res = await getSingleProduct(id);
       const fetchedProduct = res.data?.product;
+      const catId = fetchedProduct.category?._id;
+      if (catId === null) {
+        setCategoryId("");
+      }
+      setCategoryId(catId);
       setProduct(fetchedProduct);
       setMainImage(fetchedProduct?.images?.[0]);
     } catch (error) {
@@ -30,6 +31,11 @@ export default function ProductDetailsComponent() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (id) {
+      fetchProductDetails(id);
+    }
+  }, [id]);
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -57,8 +63,9 @@ export default function ProductDetailsComponent() {
             <img
               src={mainImage}
               alt={product?.name}
-              className="w-full h-auto rounded-lg shadow-md mb-4"
+              className="w-full h-96 rounded-lg shadow-md mb-4 object-cover"
             />
+
             <div className="flex gap-4 py-4 justify-center overflow-x-auto">
               {product.images?.map((thumb, i) => (
                 <img
@@ -211,6 +218,7 @@ export default function ProductDetailsComponent() {
           </div>
         </div>
       </div>
+      <RelatedProduct categoryId={categoryId} />
 
       {/* Recently Viewed or Related Products */}
       <RecentProducts />

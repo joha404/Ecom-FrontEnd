@@ -21,3 +21,22 @@ export const getSingleProduct = async (id) => {
     console.log(error);
   }
 };
+
+//  Get Product By CategoryId
+export const getProductByCategoryId = async (id) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/product/category/${id}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const SearchProduct = async (data) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/product/search?query=${data}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};

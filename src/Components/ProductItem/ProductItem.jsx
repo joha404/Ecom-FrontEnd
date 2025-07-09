@@ -6,14 +6,17 @@ import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { addToCartThunk } from "../../api/product/cart";
+import { useWishlist } from "../../utilits/useWishlist";
 
 export default function ProductItem({ product }) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const userId = userInfo?._id || userInfo?.id;
-  console.log(product);
+
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -38,6 +41,18 @@ export default function ProductItem({ product }) {
       toast.error("Failed to add product to cart.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInWishlist(product._id)) {
+      removeFromWishlist(product._id);
+      toast.success("Removed from wishlist");
+    } else {
+      addToWishlist(product);
+      toast.success("Added to wishlist");
     }
   };
 
@@ -97,12 +112,10 @@ export default function ProductItem({ product }) {
           {/* Buttons */}
           <div className="flex justify-between items-center">
             <motion.button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // Wishlist logic
-              }}
-              className="text-red-500 hover:text-red-600 text-lg"
+              onClick={handleWishlistClick}
+              className={`${
+                isInWishlist(product._id) ? "text-red-600" : "text-gray-400"
+              } hover:text-red-600 text-lg`}
               whileTap={{ scale: 0.9 }}
             >
               <FaHeart />

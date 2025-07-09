@@ -29,9 +29,11 @@ export default function Cart() {
     setIsLoading(true);
     try {
       const res = await getAllCart(userId);
+
       const cartWithFullProducts = await Promise.all(
         res.items.map(async (item) => {
-          const resProduct = await getSingleProduct(item.productId._id);
+          console.log(item);
+          const resProduct = await getSingleProduct(item.productId);
           const fullProduct = resProduct.data.product;
           return {
             ...item,

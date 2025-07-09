@@ -1,4 +1,4 @@
-import React from "react";
+import PrimaryButton from "../../Components/common/PrimaryButton";
 
 export default function SearchBar({ query, setQuery, customWidth = "w-full" }) {
   return (
@@ -20,13 +20,13 @@ export default function SearchBar({ query, setQuery, customWidth = "w-full" }) {
           onChange={(e) => setQuery(e.target.value)}
           className="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
-        <button
+        <PrimaryButton
           type="submit"
           className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           aria-label="Search"
         >
           Search
-        </button>
+        </PrimaryButton>
       </form>
     </div>
   );

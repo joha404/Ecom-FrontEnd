@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { addToCartThunk } from "../../api/product/cart";
@@ -57,11 +56,7 @@ export default function ProductItem({ product }) {
   };
 
   return (
-    <motion.div
-      className="relative flex flex-col w-full max-w-xs overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md"
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 120 }}
-    >
+    <div className="relative flex flex-col w-full max-w-xs overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
       <Link to={`/productDetails/${product._id}`}>
         {/* Image section */}
         <div className="relative mx-3 mt-3 h-60 overflow-hidden rounded-xl">
@@ -111,20 +106,18 @@ export default function ProductItem({ product }) {
 
           {/* Buttons */}
           <div className="flex justify-between items-center">
-            <motion.button
+            <button
               onClick={handleWishlistClick}
               className={`${
                 isInWishlist(product._id) ? "text-red-600" : "text-gray-400"
               } hover:text-red-600 text-lg`}
-              whileTap={{ scale: 0.9 }}
             >
               <FaHeart />
-            </motion.button>
+            </button>
 
-            <motion.button
+            <button
               onClick={handleAddToCart}
               disabled={isLoading}
-              whileTap={{ scale: 0.95 }}
               className={`${
                 isLoading
                   ? "cursor-not-allowed bg-green-400"
@@ -160,10 +153,10 @@ export default function ProductItem({ product }) {
                   Add to Cart
                 </>
               )}
-            </motion.button>
+            </button>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

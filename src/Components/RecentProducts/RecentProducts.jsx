@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { motion } from "framer-motion";
 import ProductItem from "../ProductItem/ProductItem";
 import Loading from "../Loading/Loading";
 import { getAllProduct } from "../../api/product/product";
@@ -21,33 +20,11 @@ export default function RecentProducts() {
         setIsLoading(false);
       }
     })();
-  }, []); // ✅ added dependency array
+  }, []); // dependency array included
 
   if (isLoading) {
     return <Loading />;
   }
-
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.8, 0.25, 1],
-      },
-    },
-  };
 
   return (
     <>
@@ -59,24 +36,16 @@ export default function RecentProducts() {
         All Recent Products
       </h1>
 
-      <motion.div
-        className="grid mt-8 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {data?.map((product) => (
-          <motion.div
+      <div className="grid mt-8 gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {data?.slice(0, 8)?.map((product) => (
+          <div
             key={product._id}
-            variants={itemVariants}
-            className="mx-4"
+            className="mx-4 rounded-lg bg-white dark:bg-gray-800 border my-4 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300"
           >
-            <div className="rounded-lg bg-white dark:bg-gray-800 border my-4 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <ProductItem product={product} />
-            </div>
-          </motion.div>
+            <ProductItem product={product} />
+          </div>
         ))}
-      </motion.div>
+      </div>
     </>
   );
 }

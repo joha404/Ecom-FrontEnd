@@ -17,12 +17,27 @@ const OrderSummary = ({
   const navigate = useNavigate();
   console.log(cartDetails);
   const handlePurchase = async () => {
-    const cart = cartDetails.map((item) => ({
-      product: item.productId._id || item.product,
-      quantity: item.quantity,
-      price: item?.price,
-      total: item.quantity * item?.price,
-    }));
+    const cart = cartDetails.map((item) => {
+      const productId =
+        item?.product?._id ||
+        item?.productId?._id ||
+        item?.productId ||
+        item?.product;
+
+      return {
+        product: productId,
+        quantity: item.quantity,
+        price: item?.price,
+        total: item.quantity * item?.price,
+      };
+    });
+
+    // Optional: filter out invalid cart items (no product ID)
+    const validCart = cart.filter((item) => item.product);
+
+    if (validCart.length === 0) {
+      return toast.error("Cart has invalid items. Please try again.");
+    }
 
     const payload = {
       user: {
@@ -30,24 +45,29 @@ const OrderSummary = ({
         role: userInfo?.role,
         name: userInfo?.name,
         email: userInfo?.email,
-        number: userInfo?.number,
+        number: userInfo?.number || "", // fallback to empty string if not present
       },
       addresses: [address],
-      cart,
+      cart: validCart,
       totalAmount: total,
       paymentMethod: "SSLCommerz",
     };
-    console.log(payload);
+
+    console.log("✅ Payload:", payload);
 
     try {
       setIsLoading(true);
       const res = await createPayment(payload);
       setIsLoading(false);
 
-      window.location.href = res.data.url;
-      console.log("✅ Payment initiated:");
+      if (res?.data?.url) {
+        window.location.href = res.data.url;
+      } else {
+        toast.error("No payment URL returned.");
+      }
     } catch (err) {
       console.error("❌ Payment failed:", err);
+      toast.error("Payment failed. Please try again.");
       setIsLoading(false);
     }
   };

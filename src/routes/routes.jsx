@@ -116,7 +116,7 @@ export default function AppRoutes() {
           ),
         },
         {
-          path: "allorders",
+          path: "/api/payment/success/:id",
           element: (
             <ProtectedRoute>
               <AllOrders />

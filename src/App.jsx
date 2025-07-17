@@ -1,36 +1,26 @@
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-import UserContextProvider from "./Context/UserContext";
-import CartContextProvider from "./Context/CartContext";
-import WishlistContextProvider from "./Context/WishlistContext";
 import AppRoutes from "./routes/routes";
 
-// Create query client
+// Create a query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 1000,
+      staleTime: 10 * 1000, // 10 seconds
+      refetchOnWindowFocus: false, // optional: avoid refetching when tab is refocused
     },
   },
 });
 
 function App() {
   return (
-    <UserContextProvider>
-      <CartContextProvider>
-        {" "}
-        {/* <-- Fix the name here */}
-        <WishlistContextProvider>
-          <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
-          </QueryClientProvider>
-        </WishlistContextProvider>
-      </CartContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
       <Toaster />
-    </UserContextProvider>
+    </QueryClientProvider>
   );
 }
 

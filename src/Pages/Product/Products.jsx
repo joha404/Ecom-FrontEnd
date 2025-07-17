@@ -1,36 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import FilterSidebar from "../../Components/common/FilterSidebar";
 import SearchBar from "../../Components/common/SearchBar";
 import ProductItem from "../../Components/ProductItem/ProductItem";
 import Loading from "../../Components/Loading/Loading";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { getAllProduct } from "../../api/product/product";
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState([0, 100000]);
-  const [productData, setProductData] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getAllProduct();
-        const data = res.data || [];
-        setProductData(data);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProduct();
-  }, []);
+  // ✅ Fetch products using TanStack Query
+  const {
+    data: productData = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getAllProduct,
+    select: (res) => res.data || [],
+    staleTime: 10 * 1000,
+  });
 
-  useEffect(() => {
-    const filtered = productData.filter((product) => {
+  // ✅ Filter logic using useMemo
+  const filteredProducts = useMemo(() => {
+    return productData.filter((product) => {
       const title = (product.name ?? "").toLowerCase();
       const price = Number(product.price);
       const nameMatch = title.includes(searchQuery.toLowerCase());
@@ -38,10 +34,10 @@ export default function Products() {
         !isNaN(price) && price >= priceRange[0] && price <= priceRange[1];
       return nameMatch && priceMatch;
     });
-    setFilteredProducts(filtered);
   }, [searchQuery, priceRange, productData]);
 
   if (isLoading) return <Loading />;
+  if (isError) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
     <div className="px-4 sm:px-6 lg:px-10 max-w-screen-xl mx-auto mt-32">

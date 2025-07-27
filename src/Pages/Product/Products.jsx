@@ -84,10 +84,10 @@ export default function Products() {
             >
               <option value="0-100000">All Prices</option>
               <option value="0-50">Under $50</option>
-              <option value="50-100">$50 - $100</option>
-              <option value="100-500">$100 - $500</option>
-              <option value="500-1000">$500 - $1000</option>
-              <option value="1000-100000">Above $1000</option>
+              <option value="100-500">$50 - $100</option>
+              <option value="600-1000">$100 - $500</option>
+              <option value="1000-2000">$500 - $1000</option>
+              <option value="2000-100000">Above $1000</option>
             </select>
           </div>
         </motion.div>

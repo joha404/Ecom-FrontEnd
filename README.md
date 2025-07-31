@@ -17,21 +17,4 @@ This is the **Frontend** of a Full-Stack E-Commerce Web Application built using 
 
 ---
 
-## 📁 Project Structure
 
-ecommerce-frontend/
-│
-├── public/ # Static files (favicon, index.html)
-├── src/
-│ ├── assets/ # Images and media
-│ ├── components/ # Reusable components (Navbar, Footer, ProductCard)
-│ ├── pages/ # Pages (Home, Product, Cart, Login, etc.)
-│ ├── context/ # Context providers (if using Context API)
-│ ├── redux/ # Redux slices, store (if using Redux)
-│ ├── utils/ # Helper functions (API calls, validators)
-│ ├── App.jsx # Root component
-│ └── main.jsx # ReactDOM render
-├── .env # Environment variables
-├── .gitignore
-├── package.json
-└── README.md

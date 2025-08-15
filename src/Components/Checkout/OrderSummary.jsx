@@ -45,7 +45,7 @@ const OrderSummary = ({
         role: userInfo?.role,
         name: userInfo?.name,
         email: userInfo?.email,
-        number: userInfo?.number || "", // fallback to empty string if not present
+        number: userInfo?.number || "",
       },
       addresses: [address],
       cart: validCart,

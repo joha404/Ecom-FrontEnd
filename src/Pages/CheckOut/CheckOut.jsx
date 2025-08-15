@@ -17,7 +17,7 @@ export default function CheckOut() {
 
   const userProfileId = userInfo?.id;
 
-  // 🟢 Fetch user addresses
+  // Fetch user addresses
   const fetchAddress = async () => {
     try {
       const res = await getAddress(userProfileId);
@@ -28,7 +28,7 @@ export default function CheckOut() {
     }
   };
 
-  // 🟢 Fetch cart data
+  // Fetch cart data
   const fetchCart = async () => {
     try {
       const res = await getAllCart(userProfileId);
@@ -55,8 +55,43 @@ export default function CheckOut() {
 
   const subtotal = cartDetails.totalPrice;
 
-  if (loading)
-    return <div className="text-center mt-10">Loading checkout data...</div>;
+  // Skeleton Loader
+  if (loading) {
+    return (
+      <div className="bg-white sm:px-8 px-4 py-6 mt-32 animate-pulse">
+        <div className="max-w-screen-xl max-md:max-w-xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8 lg:gap-x-12">
+            {/* Address Skeleton */}
+            <div className="lg:col-span-2">
+              <div className="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+              <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
+                {[...Array(4)].map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="border border-gray-200 rounded-lg p-4 space-y-3"
+                  >
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                    <div className="h-10 bg-gray-200 rounded"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Order Summary Skeleton */}
+            <div className="relative border border-gray-200 rounded-lg p-4 space-y-4">
+              <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-12 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white sm:px-8 px-4 py-6 mt-32">
@@ -102,7 +137,6 @@ export default function CheckOut() {
               }}
               onContinue={() => {
                 console.log("🛍️ Continue shopping clicked");
-                // You can use a navigate('/shop') or similar here
               }}
             />
           </div>

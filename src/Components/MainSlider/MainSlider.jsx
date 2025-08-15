@@ -76,7 +76,7 @@ export default function MainSlider() {
                 key={index} // important for anim on slide change
               >
                 <motion.h1
-                  className="text-3xl sm:text-5xl font-extrabold mb-4 leading-tight drop-shadow-lg"
+                  className="text-3xl sm:text-5xl font-bold mb-4 leading-tight drop-shadow-lg"
                   initial={{ y: -20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
@@ -94,7 +94,7 @@ export default function MainSlider() {
                 </motion.p>
 
                 <motion.button
-                  className="bg-green-600 hover:bg-green-700 px-6 py-3 text-sm sm:text-base font-semibold rounded-full shadow-lg transition"
+                  className="bg-primary hover:bg-green-700 px-6 py-3 text-sm sm:text-base font-semibold rounded-lg shadow-lg transition"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >

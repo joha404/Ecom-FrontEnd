@@ -4,6 +4,10 @@ import RecentProducts from "../RecentProducts/RecentProducts";
 import Loading from "../Loading/Loading";
 import { getSingleProduct } from "../../api/product/product";
 import RelatedProduct from "./RelatedProduct";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { addToCartThunk } from "../../api/product/cart";
+import { useWishlist } from "../../utilits/useWishlist";
 
 export default function ProductDetailsComponent() {
   const { id } = useParams();
@@ -12,6 +16,11 @@ export default function ProductDetailsComponent() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [categoryId, setCategoryId] = useState("");
+  const dispatch = useDispatch();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [isLoading, setIsLoading] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userId = userInfo?._id || userInfo?.id;
 
   const fetchProductDetails = async (id) => {
     try {
@@ -36,9 +45,45 @@ export default function ProductDetailsComponent() {
       fetchProductDetails(id);
     }
   }, [id]);
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
+    if (!userId) {
+      alert("Please log in to add items to your cart.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await dispatch(
+        addToCartThunk({
+          userId,
+          productId: product._id,
+          quantity: 1,
+        })
+      );
+      toast.success("Product added to cart!");
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      toast.error("Failed to add product to cart.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
+  };
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInWishlist(product._id)) {
+      removeFromWishlist(product._id);
+      toast.success("Removed from wishlist");
+    } else {
+      addToWishlist(product);
+      toast.success("Added to wishlist");
+    }
   };
 
   const handleIncrease = () => {
@@ -160,47 +205,59 @@ export default function ProductDetailsComponent() {
 
             {/* Buttons */}
             <div className="flex space-x-4 mb-6">
-              <button className="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75
-                      m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 
-                      0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 
-                      0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 
-                      0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                  />
-                </svg>
-                Add to Cart
+              <button
+                onClick={handleAddToCart}
+                disabled={isLoading}
+                className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <p>Adding</p>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-2 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    Add to cart
+                  </>
+                )}
               </button>
 
-              <button className="bg-gray-200 flex gap-2 items-center text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300">
+              <button
+                onClick={handleWishlistClick}
+                className="bg-gray-200 flex gap-2 items-center text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
                   className="size-6"
+                  fill={isInWishlist(product._id) ? "red" : "none"} // ❤️ Fill red if in wishlist
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 
-                      0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 
-                      3.75 3 5.765 3 8.25c0 7.22 9 12 9 
-                      12s9-4.78 9-12Z"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5
+         -1.935 0-3.597 1.126-4.312 2.733
+         -.715-1.607-2.377-2.733-4.313-2.733
+         C5.1 3.75 3 5.765 3 8.25
+         c0 7.22 9 12 9 12s9-4.78 9-12Z"
                   />
                 </svg>
-                Wishlist
+                {isInWishlist(product._id)
+                  ? "Remove from Wishlist"
+                  : "Add to Wishlist"}
               </button>
             </div>
 

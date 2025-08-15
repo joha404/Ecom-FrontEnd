@@ -20,15 +20,13 @@ export const addToCartThunk =
         `${BASE_URL}/cart/add`,
         { userId, productId, quantity },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      // If backend returns updated cart, update Redux state
+      // backend should return cart array directly
       if (res.data?.cart) {
-        dispatch(setCartItem(res.data.cart));
+        dispatch(setCartItem(res.data.cart)); // cart is array of items
       }
 
       return res.data;
@@ -40,32 +38,11 @@ export const addToCartThunk =
     }
   };
 
-/**
- * Get all cart items for a user
- */
-export const getAllCart = async (userId) => {
-  try {
-    const res = await axios.get(`${BASE_URL}/cart/${userId}`);
-    return res.data;
-  } catch (error) {
-    console.error("Failed to fetch cart:", error?.response?.data || error);
-    throw error;
-  }
-};
-
-/**
- * Remove a single cart item
- * @param {{ userId: string, productId: string }} data
- */
 export const removeSingleCart = async (data, dispatch) => {
   try {
     dispatch(setIsCartLoading(true));
-
-    const res = await axios.delete(`${BASE_URL}/cart/remove`, {
-      data,
-    });
-    dispatch(setCartItem(res.data.cart.items));
-
+    const res = await axios.delete(`${BASE_URL}/cart/remove`, { data });
+    dispatch(setCartItem(res.data.cart || [])); // always array
     return res.data;
   } catch (error) {
     console.error(
@@ -77,20 +54,22 @@ export const removeSingleCart = async (data, dispatch) => {
     dispatch(setIsCartLoading(false));
   }
 };
+export const getAllCart = async (userId) => {
+  try {
+    const res = await axios.get(`${BASE_URL}/cart/${userId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch cart:", error?.response?.data || error);
+    throw error;
+  }
+};
 
 export const clearAllCartItems = async (data, dispatch) => {
   try {
     dispatch(setIsCartLoading(true));
-
-    const res = await axios.delete(`${BASE_URL}/cart/clear`, {
-      data,
-    });
-
-    console.log("Clear Cart response:", res.data);
-
-    dispatch(setCartItem(res.data.cart || []));
-
-    return res.data; // 👈 this needs to return something (like JSON)
+    const res = await axios.delete(`${BASE_URL}/cart/clear`, { data });
+    dispatch(setCartItem(res.data.cart || [])); // always array
+    return res.data;
   } catch (error) {
     console.error("Failed to clear cart:", error?.response?.data || error);
     throw error;

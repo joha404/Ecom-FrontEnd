@@ -115,7 +115,6 @@ export default function RightSide({ cartItems }) {
             </p>
           )}
           <PrimaryButton
-            isSubmitting={isLoading}
             type="submit"
             className="w-full rounded-md bg-blue-500 px-4 py-2 text-white font-medium hover:bg-blue-600"
           >

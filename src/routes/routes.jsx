@@ -19,10 +19,11 @@ import Profile from "../Pages/Profile/Profile";
 import Setting from "../Pages/Setting/Setting";
 import OTPVerification from "../Pages/Auth/OTPVerification";
 import ForgetPasswordResetCode from "../Pages/Auth/ForgetPassword";
+import Payment from "../Pages/Payment/Payment";
 
 export default function AppRoutes() {
   return useRoutes([
-    // Public/auth routes, no Layout wrapper
+    // Public/auth routes
     { path: "login", element: <Login /> },
     { path: "register", element: <Register /> },
     { path: "forget", element: <ForgetPasswordResetCode /> },
@@ -115,11 +116,12 @@ export default function AppRoutes() {
             </ProtectedRoute>
           ),
         },
+        // ✅ Corrected payment-success route
         {
-          path: "/api/payment/success/:id",
+          path: "api/payment-success/:id",
           element: (
             <ProtectedRoute>
-              <AllOrders />
+              <Payment />
             </ProtectedRoute>
           ),
         },
